@@ -1,15 +1,23 @@
 const renderSpace = document.getElementById("render");
 
-fetch("dados.json")
-    .then((response) => response.json())
-    .then((data) => {
+async function fetchData() {
+    try {
+        const response = await fetch("dados.json");
+        if (!response.ok) {
+            throw new Error(
+                `Erro ao carregar o arquivo JSON: ${response.statusText}`
+            );
+        }
+
+        const data = await response.json();
+
         renderUserInfo(data.nome, data.idade, data.email, data.pais);
         renderUserEndereco(data.enderecos);
         renderUserTel(data.telefones);
-    })
-    .catch((error) => {
-        console.log("Erro: ", error);
-    });
+    } catch (error) {
+        console.log("Erro ao ler o arquivo JSON: ", error);
+    }
+}
 
 function criarElemento(tag, className, text) {
     const elemento = document.createElement(tag);
@@ -74,3 +82,5 @@ function renderUserTel(telefones) {
         renderSpace.appendChild(telefoneCard);
     });
 }
+
+fetchData();
